@@ -13,6 +13,15 @@ class ReactNativeHealthkit: RCTEventEmitter {
   var _dateFormatter: ISO8601DateFormatter
   var _hasListeners = false
 
+  #if os(iOS)
+  @available(iOS 17.0, *)
+  var _workoutSession: HKWorkoutSession? {
+    get { return __session as? HKWorkoutSession }
+    set { __session = newValue }
+  }
+  private var __session: Any?
+  #endif
+
   override init() {
     self._runningQueries = [String: HKQuery]()
     self._dateFormatter = ISO8601DateFormatter()
@@ -676,7 +685,12 @@ class ReactNativeHealthkit: RCTEventEmitter {
   }
 
   override func supportedEvents() -> [String]! {
-    return ["onChange"]
+    return [
+      "onChange",
+      "onWorkoutStateChange",
+      "onWorkoutError",
+      "onWorkoutDataReceived"
+    ]
   }
 
   @objc(enableBackgroundDelivery:updateFrequency:resolve:reject:)
@@ -2026,4 +2040,116 @@ class ReactNativeHealthkit: RCTEventEmitter {
     }
   }
 
+  @available(iOS 17.0.0, *)
+  @objc(workoutSessionMirroringStartHandler:reject:)
+  func workoutSessionMirroringStartHandler(
+    resolve: @escaping RCTPromiseResolveBlock,
+    reject: @escaping RCTPromiseRejectBlock
+  ) {
+    guard let store = _store else {
+      return reject(INIT_ERROR, INIT_ERROR_MESSAGE, nil)
+    }
+
+    store.workoutSessionMirroringStartHandler = { [weak self] mirroringSession in
+      print(mirroringSession)
+      self?._workoutSession = mirroringSession
+      self?._workoutSession?.delegate = self
+    }
+
+    resolve(true)
+  }
+
+}
+
+// MARK: - HKWorkoutSessionDelegate
+
+extension ReactNativeHealthkit: HKWorkoutSessionDelegate {
+
+  @available(iOS 17.0.0, *)
+  func workoutSession(
+    _ workoutSession: HKWorkoutSession,
+    didChangeTo toState: HKWorkoutSessionState,
+    from fromState: HKWorkoutSessionState,
+    date: Date
+  ) {
+    Task { @MainActor [weak self] in
+      guard let self = self else { return }
+
+      if self.bridge != nil && self.bridge.isValid {
+        self.sendEvent(withName: "onWorkoutStateChange", body: [
+          "toState": toState.rawValue,
+          "fromState": fromState.rawValue,
+          "date": self._dateFormatter.string(from: date)
+        ])
+      }
+    }
+  }
+
+  @available(iOS 17.0.0, *)
+  func workoutSession(_ workoutSession: HKWorkoutSession, didFailWithError error: any Error) {
+    Task { @MainActor [weak self] in
+      guard let self = self else { return }
+
+      if self.bridge != nil && self.bridge.isValid {
+        self.sendEvent(withName: "onWorkoutError", body: [
+          "error": error.localizedDescription
+        ])
+      }
+    }
+  }
+
+  @available(iOS 17.0.0, *)
+  func workoutSession(
+    _ workoutSession: HKWorkoutSession,
+    didReceiveDataFromRemoteWorkoutSession data: [Data]
+  ) {
+    Task { @MainActor [weak self] in
+      guard let self = self else { return }
+
+      do {
+        var processedData: [[String: Any]] = []
+        for anElement in data {
+          if let elapsedTime = try? JSONDecoder().decode(WorkoutElapsedTime.self, from: anElement) {
+            processedData.append([
+              "type": "elapsedTime",
+              "timeInterval": elapsedTime.timeInterval,
+              "date": self._dateFormatter.string(from: elapsedTime.date)
+            ])
+          } else if let statisticsArray = try NSKeyedUnarchiver.unarchivedArrayOfObjects(
+            ofClass: HKStatistics.self,
+            from: anElement
+          ) {
+            processedData.append([
+              "type": "statistics",
+              "statistics": statisticsArray.map { stat in
+                // TODO: Add your statistics serialization logic here
+                return [
+                  "quantityType": stat.quantityType.identifier
+                  // TODO: Add other statistics properties you need
+                ]
+              }
+            ])
+          }
+        }
+
+        if self.bridge != nil && self.bridge.isValid {
+          self.sendEvent(withName: "onWorkoutDataReceived", body: [
+            "data": processedData
+          ])
+        }
+      } catch {
+        if self.bridge != nil && self.bridge.isValid {
+          self.sendEvent(withName: "onWorkoutError", body: [
+            "error": error.localizedDescription
+          ])
+        }
+      }
+    }
+  }
+}
+
+// TODO: move to another place
+struct WorkoutElapsedTime: Codable {
+    var timeInterval: TimeInterval
+    var date: Date
 }

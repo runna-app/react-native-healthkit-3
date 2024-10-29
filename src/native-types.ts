@@ -2025,6 +2025,42 @@ export enum HKWorkoutSessionLocationType {
   outdoor = 3
 }
 
+export enum WorkoutSessionState {
+  NotStarted = 1,
+  Running = 2,
+  Ended = 3,
+  Paused = 4,
+  Prepared = 5,
+  Stopped = 6,
+}
+
+export interface WorkoutStateChangeEvent {
+  readonly toState: WorkoutSessionState;
+  readonly fromState: WorkoutSessionState;
+  readonly date: string;
+}
+
+export interface WorkoutErrorEvent {
+  readonly error: string;
+}
+
+export interface WorkoutElapsedTimeData {
+  readonly type: 'elapsedTime';
+  readonly timeInterval: number;
+  readonly date: string;
+}
+
+export interface WorkoutStatisticsData {
+  readonly type: 'statistics';
+  readonly statistics: ReadonlyArray<{
+    readonly quantityType: string;
+  }>;
+}
+
+export type WorkoutDataReceivedEvent = {
+  readonly data: ReadonlyArray<WorkoutElapsedTimeData | WorkoutStatisticsData>;
+};
+
 type ReactNativeHealthkitTypeNative = {
   /**
    *  @see {@link https://developer.apple.com/documentation/healthkit/hkhealthstore/1614180-ishealthdataavailable Apple Docs }
@@ -2243,6 +2279,11 @@ type ReactNativeHealthkitTypeNative = {
   readonly startWatchAppWithWorkoutConfiguration: (
     workoutConfiguration: HKWorkoutConfiguration
   ) => Promise<boolean>;
+
+  /**
+   * @see {@link https://developer.apple.com/documentation/healthkit/hkhealthstore/4172878-workoutsessionmirroringstarthand Apple Docs }
+   */
+  readonly workoutSessionMirroringStartHandler: () => Promise<boolean>;
 };
 
 const Native = NativeModules.ReactNativeHealthkit as ReactNativeHealthkitTypeNative
@@ -2252,11 +2293,14 @@ type OnChangeCallback = ({
 }: {
   readonly typeIdentifier: HKSampleTypeIdentifier;
 }) => void;
+type OnRemoteWorkoutStateChangeCallback = (event: WorkoutStateChangeEvent) => void;
+type OnRemoteWorkoutErrorCallback = (event: WorkoutErrorEvent) => void;
+type OnRemoteWorkoutDataCallback = (event: WorkoutDataReceivedEvent) => void;
 
 interface HealthkitEventEmitter extends NativeEventEmitter {
   readonly addListener: (
-    eventType: 'onChange',
-    callback: OnChangeCallback
+    eventType: 'onChange' | 'onRemoteWorkoutStateChange' | 'onRemoteWorkoutError' | 'onRemoteWorkoutDataReceived',
+    callback: OnChangeCallback | OnRemoteWorkoutStateChangeCallback | OnRemoteWorkoutErrorCallback | OnRemoteWorkoutDataCallback
   ) => EmitterSubscription;
 }
 
