@@ -92,7 +92,7 @@ const authorizationStatusFor = UnavailableFn(Promise.resolve(HKAuthorizationStat
       saveWorkoutRoute = UnavailableFn(Promise.resolve(false)),
       subscribeToChanges = UnavailableFn(Promise.resolve(async () => Promise.resolve(false))),
       startWatchApp = UnavailableFn(async () => Promise.resolve(false)),
-      workoutSessionMirroringStartHandler = UnavailableFn(async () => Promise.resolve(false)),
+      workoutSessionMirroringStartHandler = UnavailableFn(Promise.resolve(false)),
       useMostRecentCategorySample = UnavailableFn(null),
       useMostRecentQuantitySample = UnavailableFn(null),
       useMostRecentWorkout = UnavailableFn(null),
