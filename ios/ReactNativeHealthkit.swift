@@ -2018,7 +2018,7 @@ class ReactNativeHealthkit: RCTEventEmitter {
 
     store.startWatchApp(with: configuration) { success, error in
       if let error {
-        reject(INIT_ERROR, INIT_ERROR_MESSAGE, error)
+        reject(GENERIC_ERROR, error.localizedDescription, error)
         return
       }
 
