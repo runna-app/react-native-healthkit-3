@@ -2050,10 +2050,9 @@ class ReactNativeHealthkit: RCTEventEmitter {
       return reject(INIT_ERROR, INIT_ERROR_MESSAGE, nil)
     }
 
-    store.workoutSessionMirroringStartHandler = { [weak self] mirroringSession in
-      print(mirroringSession)
-      self?._workoutSession = mirroringSession
-      self?._workoutSession?.delegate = self
+    store.workoutSessionMirroringStartHandler = { mirroringSession in
+      self._workoutSession = mirroringSession
+      self._workoutSession?.delegate = self
     }
 
     resolve(true)
@@ -2091,9 +2090,10 @@ extension ReactNativeHealthkit: HKWorkoutSessionDelegate {
       guard let self = self else { return }
 
       if self.bridge != nil && self.bridge.isValid {
-        self.sendEvent(withName: "onWorkoutError", body: [
-          "error": error.localizedDescription
-        ])
+        self.sendEvent(
+          withName: "onWorkoutError",
+          body: ["error": error.localizedDescription]
+        )
       }
     }
   }
@@ -2107,49 +2107,32 @@ extension ReactNativeHealthkit: HKWorkoutSessionDelegate {
       guard let self = self else { return }
 
       do {
-        var processedData: [[String: Any]] = []
-        for anElement in data {
-          if let elapsedTime = try? JSONDecoder().decode(WorkoutElapsedTime.self, from: anElement) {
-            processedData.append([
-              "type": "elapsedTime",
-              "timeInterval": elapsedTime.timeInterval,
-              "date": self._dateFormatter.string(from: elapsedTime.date)
-            ])
-          } else if let statisticsArray = try NSKeyedUnarchiver.unarchivedArrayOfObjects(
-            ofClass: HKStatistics.self,
-            from: anElement
-          ) {
-            processedData.append([
-              "type": "statistics",
-              "statistics": statisticsArray.map { stat in
-                // TODO: Add your statistics serialization logic here
-                return [
-                  "quantityType": stat.quantityType.identifier
-                  // TODO: Add other statistics properties you need
-                ]
-              }
-            ])
-          }
+        let dataToSend = data.map { dataItem in
+          return try? decoder.decode(RemoteSessionSharableData.self, from: dataItem)
         }
-
         if self.bridge != nil && self.bridge.isValid {
-          self.sendEvent(withName: "onWorkoutDataReceived", body: [
-            "data": processedData
-          ])
+          self.sendEvent(
+            withName: "onWorkoutDataReceived",
+            body: ["data": dataToSend]
+          )
         }
       } catch {
         if self.bridge != nil && self.bridge.isValid {
-          self.sendEvent(withName: "onWorkoutError", body: [
-            "error": error.localizedDescription
-          ])
+          self.sendEvent(
+            withName: "onWorkoutError",
+            body: ["error": error.localizedDescription]
+          )
         }
       }
     }
   }
 }
 
-// TODO: move to another place
-struct WorkoutElapsedTime: Codable {
-    var timeInterval: TimeInterval
-    var date: Date
+// MARK: - RemoteSessionSharableData
+
+struct RemoteSessionSharableData: Decodable {
+  let metricType: String
+  let value: String
+  let unit: String
+  let name: String
 }
