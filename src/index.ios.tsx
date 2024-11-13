@@ -8,6 +8,7 @@ import useMostRecentWorkout from './hooks/useMostRecentWorkout'
 import useSources from './hooks/useSources'
 import useStatisticsForQuantity from './hooks/useStatisticsForQuantity'
 import useSubscribeToChanges from './hooks/useSubscribeToChanges'
+import useSubscribeToRemoteWorkoutChanges from './hooks/useSubscribeToRemoteWorkoutChanges'
 import Native, { HKQuantityTypeIdentifier } from './native-types'
 import deleteQuantitySample from './utils/deleteQuantitySample'
 import deleteSamples from './utils/deleteSamples'
@@ -38,6 +39,7 @@ import saveWorkoutRoute from './utils/saveWorkoutRoute'
 import saveWorkoutSample from './utils/saveWorkoutSample'
 import startWatchApp from './utils/startWatchApp'
 import subscribeToChanges from './utils/subscribeToChanges'
+import subscribeToRemoteWorkoutChanges from './utils/subscribeToRemoteWorkoutChanges'
 import workoutSessionMirroringStartHandler from './utils/workoutSessionMirroringStartHandler'
 
 const currentMajorVersionIOS = Platform.OS === 'ios' ? parseInt(Platform.Version, 10) : 0
@@ -188,6 +190,7 @@ export default {
 
   // subscriptions
   subscribeToChanges,
+  subscribeToRemoteWorkoutChanges,
 
   startWatchApp,
   workoutSessionMirroringStartHandler,
@@ -205,6 +208,7 @@ export default {
    */
   useMostRecentWorkout,
   useSubscribeToChanges,
+  useSubscribeToRemoteWorkoutChanges,
   /**
      * @description By default, HealthKit data is available on iOS and watchOS. HealthKit data is also available on iPadOS 17 or later. However, devices running in an enterprise environment may restrict access to HealthKit data.
     * @see {@link https://developer.apple.com/documentation/healthkit/hkhealthstore/1614180-ishealthdataavailable Apple Docs}
@@ -267,12 +271,14 @@ export {
   saveWorkoutSample,
   saveWorkoutRoute,
   subscribeToChanges,
+  subscribeToRemoteWorkoutChanges,
   startWatchApp,
   workoutSessionMirroringStartHandler,
   useMostRecentCategorySample,
   useMostRecentQuantitySample,
   useMostRecentWorkout,
   useSubscribeToChanges,
+  useSubscribeToRemoteWorkoutChanges,
   useHealthkitAuthorization,
   useIsHealthDataAvailable,
   useSources,

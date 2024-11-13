@@ -689,9 +689,9 @@ class ReactNativeHealthkit: RCTEventEmitter {
   override func supportedEvents() -> [String]! {
     return [
       "onChange",
-      "onWorkoutStateChange",
-      "onWorkoutError",
-      "onWorkoutDataReceived"
+      "onRemoteWorkoutStateChange",
+      "onRemoteWorkoutError",
+      "onRemoteWorkoutDataReceived"
     ]
   }
 
@@ -2052,9 +2052,9 @@ class ReactNativeHealthkit: RCTEventEmitter {
       return reject(INIT_ERROR, INIT_ERROR_MESSAGE, nil)
     }
 
-    store.workoutSessionMirroringStartHandler = { mirroringSession in
-      self._workoutSession = mirroringSession
-      self._workoutSession?.delegate = self
+    store.workoutSessionMirroringStartHandler = { [weak self] mirroringSession in
+      self?._workoutSession = mirroringSession
+      self?._workoutSession?.delegate = self
     }
 
     resolve(true)
@@ -2077,7 +2077,7 @@ extension ReactNativeHealthkit: HKWorkoutSessionDelegate {
       guard let self = self else { return }
 
       if self.bridge != nil && self.bridge.isValid {
-        self.sendEvent(withName: "onWorkoutStateChange", body: [
+        self.sendEvent(withName: "onRemoteWorkoutStateChange", body: [
           "toState": toState.rawValue,
           "fromState": fromState.rawValue,
           "date": self._dateFormatter.string(from: date)
@@ -2093,7 +2093,7 @@ extension ReactNativeHealthkit: HKWorkoutSessionDelegate {
 
       if self.bridge != nil && self.bridge.isValid {
         self.sendEvent(
-          withName: "onWorkoutError",
+          withName: "onRemoteWorkoutError",
           body: ["error": error.localizedDescription]
         )
       }
@@ -2109,19 +2109,29 @@ extension ReactNativeHealthkit: HKWorkoutSessionDelegate {
       guard let self = self else { return }
 
       do {
-        let dataToSend = data.map { dataItem in
-          return try? decoder.decode(RemoteSessionSharableData.self, from: dataItem)
-        }
         if self.bridge != nil && self.bridge.isValid {
+          let serializedData = try data.map { dataItem -> [String: String] in
+            let decoded = try self.decoder.decode(
+              RemoteSessionSharableData.self,
+              from: dataItem
+            )
+            return [
+              "metricType": decoded.metricType,
+              "value": decoded.value,
+              "unit": decoded.unit,
+              "name": decoded.name
+            ]
+          }
+
           self.sendEvent(
-            withName: "onWorkoutDataReceived",
-            body: ["data": dataToSend]
+            withName: "onRemoteWorkoutDataReceived",
+            body: ["data": serializedData]
           )
         }
       } catch {
         if self.bridge != nil && self.bridge.isValid {
           self.sendEvent(
-            withName: "onWorkoutError",
+            withName: "onRemoteWorkoutError",
             body: ["error": error.localizedDescription]
           )
         }

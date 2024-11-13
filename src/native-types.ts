@@ -2044,21 +2044,15 @@ export interface WorkoutErrorEvent {
   readonly error: string;
 }
 
-export interface WorkoutElapsedTimeData {
-  readonly type: 'elapsedTime';
-  readonly timeInterval: number;
-  readonly date: string;
-}
-
-export interface WorkoutStatisticsData {
-  readonly type: 'statistics';
-  readonly statistics: ReadonlyArray<{
-    readonly quantityType: string;
-  }>;
+export type RemoteSessionSharableData = {
+  readonly metricType: string;
+  readonly value: string;
+  readonly unit: string;
+  readonly name: string;
 }
 
 export type WorkoutDataReceivedEvent = {
-  readonly data: ReadonlyArray<WorkoutElapsedTimeData | WorkoutStatisticsData>;
+  readonly data: readonly RemoteSessionSharableData[];
 };
 
 type ReactNativeHealthkitTypeNative = {
