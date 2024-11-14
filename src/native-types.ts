@@ -2045,7 +2045,7 @@ export interface WorkoutErrorEvent {
 }
 
 export type RemoteSessionSharableData = {
-  readonly metricType: string;
+  readonly type: string;
   readonly value: string;
   readonly unit: string;
   readonly name: string;

@@ -2116,10 +2116,10 @@ extension ReactNativeHealthkit: HKWorkoutSessionDelegate {
               from: dataItem
             )
             return [
-              "metricType": decoded.metricType,
+              "name": decoded.name,
+              "type": decoded.type,
               "value": decoded.value,
-              "unit": decoded.unit,
-              "name": decoded.name
+              "unit": decoded.unit ?? ""
             ]
           }
 
@@ -2143,8 +2143,8 @@ extension ReactNativeHealthkit: HKWorkoutSessionDelegate {
 // MARK: - RemoteSessionSharableData
 
 struct RemoteSessionSharableData: Decodable {
-  let metricType: String
-  let value: String
-  let unit: String
   let name: String
+  let type: String
+  let value: String
+  let unit: String?
 }
