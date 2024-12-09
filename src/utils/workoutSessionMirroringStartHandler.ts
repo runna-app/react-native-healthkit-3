@@ -1,5 +1,5 @@
 import Native from '../native-types'
 
-const workoutSessionMirroringStartHandler = async () => Native.workoutSessionMirroringStartHandler()
+const workoutSessionMirroringStartHandler: () => Promise<boolean> = async () => Native.workoutSessionMirroringStartHandler()
 
 export default workoutSessionMirroringStartHandler
