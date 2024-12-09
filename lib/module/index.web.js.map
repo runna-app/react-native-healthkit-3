@@ -1,0 +1,1 @@
+{"version":3,"names":["Healthkit"],"sources":["index.web.tsx"],"sourcesContent":["import Healthkit from './index.native'\n\nexport * from './index.native'\n\nexport default Healthkit\n"],"mappings":"AAAA,OAAOA,SAAS,MAAM,gBAAgB;AAEtC,cAAc,gBAAgB;AAE9B,eAAeA,SAAS","ignoreList":[]}
