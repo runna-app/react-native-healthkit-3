@@ -1,5 +1,8 @@
 {
   "compilerOptions": {
+    "declaration": true,
+    "declarationDir": "./lib/typescript",
+    "emitDeclarationOnly": true,
     "baseUrl": ".",
     "paths": {
       "@kingstinct/react-native-healthkit": [ "./src/index" ],
