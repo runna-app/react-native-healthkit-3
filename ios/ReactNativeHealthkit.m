@@ -239,4 +239,8 @@ RCT_EXTERN_METHOD(workoutSessionMirroringStartHandler:(RCTPromiseResolveBlock)re
                   reject:(RCTPromiseRejectBlock)reject
 )
 
+RCT_EXTERN_METHOD(endRemoteWorkoutSession:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject
+)
+
 @end

@@ -2060,6 +2060,21 @@ class ReactNativeHealthkit: RCTEventEmitter {
     resolve(true)
   }
 
+  @available(iOS 17.0.0, *)
+  @objc(endRemoteWorkoutSession:reject:)
+  func endRemoteWorkoutSession(
+    resolve: @escaping RCTPromiseResolveBlock,
+    reject: @escaping RCTPromiseRejectBlock
+  ) {
+    guard let store = _store else {
+      return reject(INIT_ERROR, INIT_ERROR_MESSAGE, nil)
+    }
+
+    _workoutSession?.stopActivity(with: .now)
+
+    resolve(true)
+  }
+
 }
 
 // MARK: - HKWorkoutSessionDelegate
