@@ -11,6 +11,7 @@ import useSubscribeToChanges from './hooks/useSubscribeToChanges'
 import Native, { HKQuantityTypeIdentifier } from './native-types'
 import deleteQuantitySample from './utils/deleteQuantitySample'
 import deleteSamples from './utils/deleteSamples'
+import endRemoteWorkoutSession from './utils/endRemoteWorkoutSession'
 import getDateOfBirth from './utils/getDateOfBirth'
 import getMostRecentCategorySample from './utils/getMostRecentCategorySample'
 import getMostRecentQuantitySample from './utils/getMostRecentQuantitySample'
@@ -191,6 +192,7 @@ export default {
 
   startWatchApp,
   workoutSessionMirroringStartHandler,
+  endRemoteWorkoutSession,
 
   /**
    * @returns the most recent sample for the given category type.
@@ -269,6 +271,7 @@ export {
   subscribeToChanges,
   startWatchApp,
   workoutSessionMirroringStartHandler,
+  endRemoteWorkoutSession,
   useMostRecentCategorySample,
   useMostRecentQuantitySample,
   useMostRecentWorkout,
