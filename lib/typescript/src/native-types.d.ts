@@ -1618,6 +1618,10 @@ type ReactNativeHealthkitTypeNative = {
      * @see {@link https://developer.apple.com/documentation/healthkit/hkhealthstore/4172878-workoutsessionmirroringstarthand Apple Docs }
      */
     readonly workoutSessionMirroringStartHandler: () => Promise<boolean>;
+    /**
+     * Method to end an active mirroring workout sesssion }
+     */
+    readonly endRemoteWorkoutSession: () => Promise<boolean>;
 };
 declare const Native: ReactNativeHealthkitTypeNative;
 type OnChangeCallback = ({ typeIdentifier, }: {

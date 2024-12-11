@@ -9,6 +9,7 @@ import useSubscribeToChanges from './hooks/useSubscribeToChanges';
 import { HKQuantityTypeIdentifier } from './native-types';
 import deleteQuantitySample from './utils/deleteQuantitySample';
 import deleteSamples from './utils/deleteSamples';
+import endRemoteWorkoutSession from './utils/endRemoteWorkoutSession';
 import getDateOfBirth from './utils/getDateOfBirth';
 import getMostRecentCategorySample from './utils/getMostRecentCategorySample';
 import getMostRecentQuantitySample from './utils/getMostRecentQuantitySample';
@@ -149,6 +150,7 @@ declare const _default: {
     subscribeToChanges: (identifier: import("./native-types").HKSampleTypeIdentifier, callback: () => void) => Promise<() => Promise<boolean>>;
     startWatchApp: (configuration: import("./native-types").HKWorkoutConfiguration) => () => Promise<boolean>;
     workoutSessionMirroringStartHandler: () => Promise<boolean>;
+    endRemoteWorkoutSession: () => Promise<boolean>;
     /**
      * @returns the most recent sample for the given category type.
      */
@@ -183,5 +185,5 @@ export { authorizationStatusFor, availableQuantityTypes, disableAllBackgroundDel
 /**
 * @deprecated Use queryWorkoutSamples instead
 */
-queryWorkouts, queryWorkoutSamples, queryWorkoutSamplesWithAnchor, querySources, requestAuthorization, deleteQuantitySample, deleteSamples, getWorkoutPlanById, saveCategorySample, saveCorrelationSample, saveQuantitySample, saveWorkoutSample, saveWorkoutRoute, subscribeToChanges, startWatchApp, workoutSessionMirroringStartHandler, useMostRecentCategorySample, useMostRecentQuantitySample, useMostRecentWorkout, useSubscribeToChanges, useHealthkitAuthorization, useIsHealthDataAvailable, useSources, useStatisticsForQuantity, isProtectedDataAvailable, };
+queryWorkouts, queryWorkoutSamples, queryWorkoutSamplesWithAnchor, querySources, requestAuthorization, deleteQuantitySample, deleteSamples, getWorkoutPlanById, saveCategorySample, saveCorrelationSample, saveQuantitySample, saveWorkoutSample, saveWorkoutRoute, subscribeToChanges, startWatchApp, workoutSessionMirroringStartHandler, endRemoteWorkoutSession, useMostRecentCategorySample, useMostRecentQuantitySample, useMostRecentWorkout, useSubscribeToChanges, useHealthkitAuthorization, useIsHealthDataAvailable, useSources, useStatisticsForQuantity, isProtectedDataAvailable, };
 export * from './types';
