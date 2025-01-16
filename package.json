@@ -28,8 +28,7 @@
     "release": "release-it",
     "pods": "cd example && pod-install --quiet",
     "bootstrap": "cd example && bun install && bun pods",
-    "upgrade-interactive": "bunx npm-check-updates --format group -i",
-    "postinstall": "cd node_modules/@kingstinct/react-native-healthkit && bun install && bun build"
+    "upgrade-interactive": "bunx npm-check-updates --format group -i"
   },
   "lint-staged": {
     "*.swift": "swiftlint ios --fix",
