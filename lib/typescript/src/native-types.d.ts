@@ -1539,9 +1539,7 @@ export interface WorkoutErrorEvent {
 }
 export type RemoteSessionSharableData = {
     readonly type: string;
-    readonly value: string;
-    readonly unit: string;
-    readonly name: string;
+    readonly payload: Record<string, unknown>;
 };
 export type WorkoutDataReceivedEvent = {
     readonly data: readonly RemoteSessionSharableData[];
