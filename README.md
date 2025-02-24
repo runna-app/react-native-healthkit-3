@@ -91,13 +91,26 @@ Some imperative examples:
   console.log(quantity) // 17.5
   console.log(unit) // %
 
-  /* Listen to data */
   await HealthKit.requestAuthorization([HKQuantityTypeIdentifier.heartRate]); // request read permission for heart rate
 
-  /* Make sure to request permissions before subscribing to changes */
-  const unsubscribe = HealthKit.subscribeToChanges(HKQuantityTypeIdentifier.heartRate, () => {
-    // refetch whichever queries you need
-  });
+  /* Subscribe to data (Make sure to request permissions before subscribing to changes) */
+  const [hasRequestedAuthorization, setHasRequestedAuthorization] = useState(false);
+  
+  useEffect(() => {
+    HealthKit.requestAuthorization([HKQuantityTypeIdentifier.heartRate]).then(() => {
+      setHasRequestedAuthorization(true);
+    });
+  }, []);
+  
+  useEffect(() => {
+    if (hasRequestedAuthorization) {
+      const unsubscribe = HealthKit.subscribeToChanges(HKQuantityTypeIdentifier.heartRate, () => {
+        // refetch data as needed
+      });
+    }
+
+    return () => unsubscribe();
+  }, [hasRequestedAuthorization]);
 
   /* write data */
   await HealthKit.requestAuthorization([], [HKQuantityTypeIdentifier.insulinDelivery]); // request write permission for insulin delivery
@@ -118,13 +131,20 @@ Some imperative examples:
 ```
 
 ### HealthKit Anchors (breaking change in 6.0)
-In 6.0 you can use HealthKit anchors to get changes and deleted items which is very useful for syncing. This is a breaking change - but a very easy one to handle that TypeScript should help you with. Most queries now return an object containing samples which is what was returned as only an array before. In addition you also get deletedSamples and a newAnchor you can use for more advanced use cases, example:
+In 6.0 you can use HealthKit anchors to get changes and deleted items which is very useful for syncing. This is a breaking change - but a very easy one to handle that TypeScript should help you with. Most queries now return an object containing samples which is what was returned as only an array before. 
+
+```newAnchor``` is a base64-encoded string returned from HealthKit that contain sync information.  After each successful sync, store the anchor for the next time your anchor query is called to only return the values that have changed.
+
+```limit``` will indicate how many records to consider when sycning data, you can set this value to 0 indicate no limit.
+
+Example:
+
 ```TypeScript
-  const { newAnchor, samples, deletedSamples } = await queryQuantitySamples(HKQuantityTypeIdentifier.stepCount, {
+  const { newAnchor, samples, deletedSamples } = await queryQuantitySamplesWithAnchor(HKQuantityTypeIdentifier.stepCount, {
     limit: 2,
   })
 
-  const nextResult = await queryQuantitySamples(HKQuantityTypeIdentifier.stepCount, {
+  const nextResult = await queryQuantitySamplesWithAnchor(HKQuantityTypeIdentifier.stepCount, {
     limit: 2,
     anchor: newAnchor,
   })

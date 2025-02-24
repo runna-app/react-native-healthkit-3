@@ -33,6 +33,7 @@ beforeAll(async () => {
     queryQuantitySamples: jest.fn(),
     querySources: jest.fn(),
     queryStatisticsForQuantity: jest.fn(),
+    queryStatisticsCollectionForQuantity: jest.fn(),
     queryWorkoutSamples: jest.fn(),
     saveCategorySample: jest.fn(),
     saveCorrelationSample: jest.fn(),
@@ -42,6 +43,7 @@ beforeAll(async () => {
     saveWorkoutRoute: jest.fn(),
     getWorkoutPlanById: jest.fn(),
     startWatchAppWithWorkoutConfiguration: jest.fn(),
+    queryStateOfMindSamples: jest.fn(),
     workoutSessionMirroringStartHandler: jest.fn(),
   }
 

@@ -18,7 +18,8 @@ func limitOrNilIfZero(limit: Int) -> Int {
 
 func createPredicate(from: Date?, to: Date?) -> NSPredicate? {
     if from != nil || to != nil {
-        return HKQuery.predicateForSamples(withStart: from, end: to, options: [.strictEndDate, .strictStartDate])
+        return HKQuery.predicateForSamples(
+            withStart: from, end: to, options: [.strictEndDate, .strictStartDate])
     } else {
         return nil
     }
@@ -29,23 +30,23 @@ func getSortDescriptors(ascending: Bool) -> [NSSortDescriptor] {
 }
 
 func base64StringToHKQueryAnchor(base64String: String) -> HKQueryAnchor? {
-  // Step 1: Decode the base64 string to a Data object
-  guard let data = Data(base64Encoded: base64String) else {
-      print("Error: Invalid base64 string")
-      return nil
-  }
+    // Step 1: Decode the base64 string to a Data object
+    guard let data = Data(base64Encoded: base64String) else {
+        print("Error: Invalid base64 string")
+        return nil
+    }
 
-  // Step 2: Use NSKeyedUnarchiver to unarchive the data and create an HKQueryAnchor object
-  do {
-      let unarchiver = try NSKeyedUnarchiver(forReadingFrom: data)
-      unarchiver.requiresSecureCoding = true
-      let anchor = try? NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(data)
+    // Step 2: Use NSKeyedUnarchiver to unarchive the data and create an HKQueryAnchor object
+    do {
+        let unarchiver = try NSKeyedUnarchiver(forReadingFrom: data)
+        unarchiver.requiresSecureCoding = true
+        let anchor = try? NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(data)
 
-      return anchor as? HKQueryAnchor
-  } catch {
-      print("Error: Unable to unarchive HKQueryAnchor object: \(error)")
-      return nil
-  }
+        return anchor as? HKQueryAnchor
+    } catch {
+        print("Error: Unable to unarchive HKQueryAnchor object: \(error)")
+        return nil
+    }
 }
 
 func sampleTypeFromString(typeIdentifier: String) -> HKSampleType? {
@@ -102,7 +103,7 @@ func sampleTypesFromDictionary(typeIdentifiers: NSDictionary) -> Set<HKSampleTyp
         if item.value as! Bool {
             let sampleType = sampleTypeFromString(typeIdentifier: item.key as! String)
             if sampleType != nil {
-             share.insert(sampleType!)
+                share.insert(sampleType!)
             }
         }
     }
@@ -134,6 +135,14 @@ func objectTypeFromString(typeIdentifier: String) -> HKObjectType? {
         return HKObjectType.activitySummaryType()
     }
 
+    #if compiler(>=6)
+        if #available(iOS 18, *) {
+            if typeIdentifier == HKStateOfMindTypeIdentifier {
+                return HKObjectType.stateOfMindType()
+            }
+        }
+    #endif
+
     if #available(iOS 13, *) {
         if typeIdentifier == HKAudiogramTypeIdentifier {
             return HKObjectType.audiogramSampleType()
@@ -157,6 +166,88 @@ func objectTypeFromString(typeIdentifier: String) -> HKObjectType? {
     return nil
 }
 
+func hkStatisticsOptionsFromOptions(_ options: NSArray) -> HKStatisticsOptions {
+    var opts = HKStatisticsOptions()
+
+    for o in options {
+        guard let str = o as? String else { continue }
+
+        switch str {
+        case "cumulativeSum":
+            opts.insert(.cumulativeSum)
+        case "discreteAverage":
+            opts.insert(.discreteAverage)
+        case "discreteMax":
+            opts.insert(.discreteMax)
+        case "discreteMin":
+            opts.insert(.discreteMin)
+        case "discreteMostRecent":
+            if #available(iOS 12, *) {
+                opts.insert(.discreteMostRecent)
+            }
+        case "duration":
+            if #available(iOS 13, *) {
+                opts.insert(.duration)
+            }
+        case "mostRecent":
+            if #available(iOS 13, *) {
+                opts.insert(.mostRecent)
+            }
+        case "separateBySource":
+            opts.insert(.separateBySource)
+        default:
+            continue
+        }
+    }
+
+    return opts
+}
+
+func componentsFromInterval(_ interval: NSDictionary) -> DateComponents {
+    let componentKeys: [String: WritableKeyPath<DateComponents, Int?>] = [
+        "minute": \.minute,
+        "hour": \.hour,
+        "day": \.day,
+        "month": \.month,
+        "year": \.year
+    ]
+
+    var intervalComponents = DateComponents()
+    for (key, keyPath) in componentKeys {
+        if let value = interval[key] as? Int {
+            intervalComponents[keyPath: keyPath] = value
+        }
+    }
+    return intervalComponents
+}
+
+func serializeQuantityIfExists(unit: HKUnit, quantity: HKQuantity?) -> [String: Any]? {
+    guard let quantity = quantity else { return nil }
+    return serializeQuantity(unit: unit, quantity: quantity)
+}
+
+func serializeStatisticIfExists(unit: HKUnit, quantity: HKQuantity?, stats: HKStatistics)
+    -> [String: Any]? {
+    guard let quantity = quantity else { return nil }
+    return serializeStatistic(unit: unit, quantity: quantity, stats: stats)
+}
+
+func parseWorkoutConfiguration(_ dict: NSDictionary) -> HKWorkoutConfiguration {
+    let configuration = HKWorkoutConfiguration()
+
+    if let activityTypeRaw = dict[HKWorkoutActivityTypePropertyName] as? UInt,
+        let activityType = HKWorkoutActivityType(rawValue: activityTypeRaw) {
+        configuration.activityType = activityType
+    }
+
+    if let locationTypeRaw = dict[HKWorkoutSessionLocationTypePropertyName] as? Int,
+        let locationType = HKWorkoutSessionLocationType(rawValue: locationTypeRaw) {
+        configuration.locationType = locationType
+    }
+
+    return configuration
+}
+
 func parseWorkoutConfiguration(_ dict: NSDictionary) -> HKWorkoutConfiguration {
   let configuration = HKWorkoutConfiguration()
 
@@ -172,3 +263,4 @@ func parseWorkoutConfiguration(_ dict: NSDictionary) -> HKWorkoutConfiguration {
 
   return configuration
 }
+

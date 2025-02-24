@@ -11,6 +11,7 @@ import HealthKit
 let INIT_ERROR = "HEALTHKIT_INIT_ERROR"
 let INIT_ERROR_MESSAGE = "HealthKit not initialized"
 let TYPE_IDENTIFIER_ERROR = "HEALTHKIT_TYPE_IDENTIFIER_NOT_RECOGNIZED_ERROR"
+let QUERY_ERROR = "HEALTHKIT_QUERY_ERROR"
 let GENERIC_ERROR = "HEALTHKIT_ERROR"
 
 let HKCharacteristicTypeIdentifier_PREFIX = "HKCharacteristicTypeIdentifier"
@@ -22,6 +23,10 @@ let HKAudiogramTypeIdentifier = "HKAudiogramTypeIdentifier"
 let HKWorkoutTypeIdentifier = "HKWorkoutTypeIdentifier"
 let HKWorkoutRouteTypeIdentifier = "HKWorkoutRouteTypeIdentifier"
 let HKDataTypeIdentifierHeartbeatSeries = "HKDataTypeIdentifierHeartbeatSeries"
+let HKStateOfMindTypeIdentifier = "HKStateOfMindTypeIdentifier"
+
+let HKWorkoutActivityTypePropertyName = "activityType"
+let HKWorkoutSessionLocationTypePropertyName = "locationType"
 
 let HKWorkoutActivityTypePropertyName = "activityType"
 let HKWorkoutSessionLocationTypePropertyName = "locationType"

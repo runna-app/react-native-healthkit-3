@@ -5,7 +5,7 @@ name: PR - Publish Preview
 # Controls when the action will run. Triggers the workflow on push or pull request
 # events but only for the main branch
 on:
-  pull_request:
+  pull_request_target:
   workflow_dispatch:
 
 concurrency:
@@ -32,16 +32,16 @@ jobs:
         with:
           envFile: .env.github
 
-      - uses: oven-sh/setup-bun@v1
+      - uses: oven-sh/setup-bun@v2
         with:
           bun-version: ${{ env.BUN_VERSION }}
 
       - name: Install dependencies (example-expo)
-        run: bun install
+        run: bun install --frozen-lockfile
         working-directory: example-expo
       
       - name: Install dependencies (example)
-        run: bun install
+        run: bun install --frozen-lockfile
         working-directory: example
 
       - name: Expo GitHub Action
@@ -103,3 +103,27 @@ jobs:
       package_manager: bun
       no_wait: false
       checkout_ref: refs/pull/${{ github.event.number }}/merge
+
+  package-preview:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: cardinalby/export-env-action@v2
+        with:
+          envFile: .env.github
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: ${{ env.BUN_VERSION }}
+
+      - name: Install example deps
+        run: bun install --frozen-lockfile
+        working-directory: example
+
+      - name: Install example-expo deps
+        run: bun install --frozen-lockfile
+        working-directory: example-expo
+
+      - run: bun install --frozen-lockfile
+      
+      - run: npx pkg-pr-new publish

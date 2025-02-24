@@ -214,6 +214,17 @@ RCT_EXTERN_METHOD(queryStatisticsForQuantity:(NSString)typeIdentifier
                   reject:(RCTPromiseRejectBlock)reject
 )
 
+RCT_EXTERN_METHOD(queryStatisticsCollectionForQuantity:(NSString)typeIdentifier
+                  unitString:(NSString)unitString
+                  options:(NSArray)options
+                  anchorDate:(NSDate)anchorDate
+                  interval:(NSDictionary)interval
+                  startDate:(NSDate)startDate
+                  endDate:(NSDate)endDate
+                  resolve:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject
+)
+
 RCT_EXTERN_METHOD(getWheelchairUse:(RCTPromiseResolveBlock)resolve
                   withRejecter:(RCTPromiseRejectBlock)reject)
 
@@ -235,8 +246,17 @@ RCT_EXTERN_METHOD(startWatchAppWithWorkoutConfiguration:(NSDictionary)workoutCon
                   reject:(RCTPromiseRejectBlock)reject
 )
 
+<<<<<<< HEAD
 RCT_EXTERN_METHOD(workoutSessionMirroringStartHandler:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject
 )
+=======
+RCT_EXTERN_METHOD(queryStateOfMindSamples:(NSDate)from
+                  to:(NSDate)to 
+                  limit:(NSInteger)limit
+                  ascending:(BOOL)ascending
+                  resolve:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject)
+>>>>>>> upstream/master
 
 @end
