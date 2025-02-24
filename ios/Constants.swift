@@ -28,9 +28,6 @@ let HKStateOfMindTypeIdentifier = "HKStateOfMindTypeIdentifier"
 let HKWorkoutActivityTypePropertyName = "activityType"
 let HKWorkoutSessionLocationTypePropertyName = "locationType"
 
-let HKWorkoutActivityTypePropertyName = "activityType"
-let HKWorkoutSessionLocationTypePropertyName = "locationType"
-
 let SpeedUnit =  HKUnit(from: "m/s") // HKUnit.meter().unitDivided(by: HKUnit.second())
 // Support for MET data: HKAverageMETs 8.24046 kcal/hr·kg
 let METUnit = HKUnit(from: "kcal/hr·kg")
