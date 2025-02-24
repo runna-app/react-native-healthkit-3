@@ -1,1 +1,0 @@
-{"version":3,"names":["ensureTotals","totals"],"sources":["ensureTotals.ts"],"sourcesContent":["function ensureTotals<TTotals>(totals?: TTotals) {\n  return totals || ({} as TTotals)\n}\n\nexport default ensureTotals\n"],"mappings":"AAAA,SAASA,YAAYA,CAAUC,MAAgB,EAAE;EAC/C,OAAOA,MAAM,IAAK,CAAC,CAAa;AAClC;AAEA,eAAeD,YAAY","ignoreList":[]}
