@@ -25,6 +25,8 @@ import queryHeartbeatSeriesSamplesWithAnchor from './utils/queryHeartbeatSeriesS
 import queryQuantitySamples from './utils/queryQuantitySamples';
 import queryQuantitySamplesWithAnchor from './utils/queryQuantitySamplesWithAnchor';
 import querySources from './utils/querySources';
+import { queryStateOfMindSamples } from './utils/queryStateOfMindSamples';
+import queryStatisticsCollectionForQuantity from './utils/queryStatisticsCollectionForQuantity';
 import queryStatisticsForQuantity from './utils/queryStatisticsForQuantity';
 import queryWorkoutSamples from './utils/queryWorkouts';
 import queryWorkoutSamplesWithAnchor from './utils/queryWorkoutSamplesWithAnchor';
@@ -127,6 +129,7 @@ declare const _default: {
     queryQuantitySamples: import("./utils/queryQuantitySamples").QueryQuantitySamplesFn;
     queryQuantitySamplesWithAnchor: import("./utils/queryQuantitySamplesWithAnchor").QueryQuantitySamplesWithAnchorFn;
     queryStatisticsForQuantity: typeof queryStatisticsForQuantity;
+    queryStatisticsCollectionForQuantity: typeof queryStatisticsCollectionForQuantity;
     /**
    * @deprecated Use queryWorkoutSamples instead
    */
@@ -176,12 +179,18 @@ declare const _default: {
     useHealthkitAuthorization: (read: readonly import("./native-types").HealthkitReadAuthorization[], write?: readonly import("./native-types").HKSampleTypeIdentifier[] | undefined) => readonly [import("./native-types").HKAuthorizationRequestStatus | null, () => Promise<import("./native-types").HKAuthorizationRequestStatus>];
     useSources: typeof useSources;
     useStatisticsForQuantity: typeof useStatisticsForQuantity;
+    queryStateOfMindSamples: ({ from, to, limit, ascending, }?: {
+        readonly from?: Date | undefined;
+        readonly to?: Date | undefined;
+        readonly limit?: number | undefined;
+        readonly ascending?: boolean | undefined;
+    }) => Promise<readonly import("./native-types").HKStateOfMindSampleRaw[]>;
 };
 export default _default;
 declare const queryWorkouts: typeof queryWorkoutSamples;
-export { authorizationStatusFor, availableQuantityTypes, disableAllBackgroundDelivery, disableBackgroundDelivery, enableBackgroundDelivery, getBiologicalSex, getBloodType, getDateOfBirth, getFitzpatrickSkinType, getMostRecentCategorySample, getMostRecentQuantitySample, getMostRecentWorkout, getPreferredUnit, getPreferredUnits, getRequestStatusForAuthorization, getWheelchairUse, getWorkoutRoutes, isHealthDataAvailable, queryCategorySamples, queryCategorySamplesWithAnchor, queryCorrelationSamples, queryHeartbeatSeriesSamples, queryHeartbeatSeriesSamplesWithAnchor, queryQuantitySamples, queryQuantitySamplesWithAnchor, queryStatisticsForQuantity, 
+export { authorizationStatusFor, availableQuantityTypes, disableAllBackgroundDelivery, disableBackgroundDelivery, enableBackgroundDelivery, getBiologicalSex, getBloodType, getDateOfBirth, getFitzpatrickSkinType, getMostRecentCategorySample, getMostRecentQuantitySample, getMostRecentWorkout, getPreferredUnit, getPreferredUnits, getRequestStatusForAuthorization, getWheelchairUse, getWorkoutRoutes, isHealthDataAvailable, queryCategorySamples, queryCategorySamplesWithAnchor, queryCorrelationSamples, queryHeartbeatSeriesSamples, queryHeartbeatSeriesSamplesWithAnchor, queryQuantitySamples, queryQuantitySamplesWithAnchor, queryStatisticsForQuantity, queryStatisticsCollectionForQuantity, 
 /**
 * @deprecated Use queryWorkoutSamples instead
 */
-queryWorkouts, queryWorkoutSamples, queryWorkoutSamplesWithAnchor, querySources, requestAuthorization, deleteQuantitySample, deleteSamples, getWorkoutPlanById, saveCategorySample, saveCorrelationSample, saveQuantitySample, saveWorkoutSample, saveWorkoutRoute, subscribeToChanges, startWatchApp, workoutSessionMirroringStartHandler, useMostRecentCategorySample, useMostRecentQuantitySample, useMostRecentWorkout, useSubscribeToChanges, useHealthkitAuthorization, useIsHealthDataAvailable, useSources, useStatisticsForQuantity, isProtectedDataAvailable, };
+queryWorkouts, queryWorkoutSamples, queryWorkoutSamplesWithAnchor, querySources, requestAuthorization, deleteQuantitySample, deleteSamples, getWorkoutPlanById, saveCategorySample, saveCorrelationSample, saveQuantitySample, saveWorkoutSample, saveWorkoutRoute, subscribeToChanges, startWatchApp, workoutSessionMirroringStartHandler, useMostRecentCategorySample, useMostRecentQuantitySample, useMostRecentWorkout, useSubscribeToChanges, useHealthkitAuthorization, useIsHealthDataAvailable, useSources, useStatisticsForQuantity, isProtectedDataAvailable, queryStateOfMindSamples, };
 export * from './types';
