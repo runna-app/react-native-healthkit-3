@@ -698,7 +698,8 @@ class ReactNativeHealthkit: RCTEventEmitter {
       "onChange",
       "onRemoteWorkoutStateChange",
       "onRemoteWorkoutError",
-      "onRemoteWorkoutDataReceived"
+      "onRemoteWorkoutDataReceived",
+      "onRemoteWorkoutEventReceived"
     ]
   }
 
@@ -2358,6 +2359,16 @@ extension ReactNativeHealthkit: HKWorkoutSessionDelegate {
           )
         }
       }
+    }
+  }
+
+  @available(iOS 17.0, *)
+  func workoutSession(_ workoutSession: HKWorkoutSession, didGenerate event: HKWorkoutEvent) {
+    if self.bridge != nil && self.bridge.isValid {
+      self.sendEvent(
+        withName: "onRemoteWorkoutEventReceived",
+        body: ["type": event.type.rawValue]
+      )
     }
   }
 }
