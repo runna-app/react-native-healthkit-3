@@ -1,0 +1,3 @@
+import type { HKQuantityTypeIdentifier, HKStatisticsOptions, UnitForIdentifier, IntervalComponents } from '../native-types';
+declare function queryStatisticsCollectionForQuantity<TIdentifier extends HKQuantityTypeIdentifier, TUnit extends UnitForIdentifier<TIdentifier> = UnitForIdentifier<TIdentifier>>(identifier: TIdentifier, options: readonly HKStatisticsOptions[], anchorDate: Date, intervalComponents: IntervalComponents, startDate: Date, endDate: Date, unit?: TUnit): Promise<readonly import("../native-types").QueryStatisticsResponseRaw<TIdentifier, TUnit>[]>;
+export default queryStatisticsCollectionForQuantity;

@@ -21,6 +21,11 @@ export declare const HKAudiogramTypeIdentifier: "HKAudiogramSampleType";
  */
 export declare const HKWorkoutRouteTypeIdentifier: "HKWorkoutRouteTypeIdentifier";
 /**
+ * Represents a state of mind type identifier.
+ * @see {@link https://developer.apple.com/documentation/healthkit/hkstateofmindtype Apple Docs HKStateOfMindType}
+ */
+export declare const HKStateOfMindTypeIdentifier: "HKStateOfMindTypeIdentifier";
+/**
  * Represents a series sample containing heartbeat data..
  * @see {@link https://developer.apple.com/documentation/healthkit/HKDataTypeIdentifierHeartbeatSeries Apple Docs HKDataTypeIdentifierHeartbeatSeries}
  */
@@ -783,7 +788,7 @@ export declare enum HKCategoryTypeIdentifier {
      */
     bleedingDuringPregnancy = "HKCategoryTypeIdentifierBleedingDuringPregnancy"
 }
-export type HKSampleTypeIdentifier = HKCategoryTypeIdentifier | HKCorrelationTypeIdentifier | HKQuantityTypeIdentifier | typeof HKActivitySummaryTypeIdentifier | typeof HKAudiogramTypeIdentifier | typeof HKDataTypeIdentifierHeartbeatSeries | typeof HKWorkoutRouteTypeIdentifier | typeof HKWorkoutTypeIdentifier | `${HKCategoryTypeIdentifier}` | `${HKCorrelationTypeIdentifier}` | `${HKQuantityTypeIdentifier}`;
+export type HKSampleTypeIdentifier = HKCategoryTypeIdentifier | HKCorrelationTypeIdentifier | HKQuantityTypeIdentifier | typeof HKStateOfMindTypeIdentifier | typeof HKActivitySummaryTypeIdentifier | typeof HKAudiogramTypeIdentifier | typeof HKDataTypeIdentifierHeartbeatSeries | typeof HKWorkoutRouteTypeIdentifier | typeof HKWorkoutTypeIdentifier | `${HKCategoryTypeIdentifier}` | `${HKCorrelationTypeIdentifier}` | `${HKQuantityTypeIdentifier}`;
 export type HealthkitReadAuthorization = HKCharacteristicTypeIdentifier | HKSampleTypeIdentifier | `${HKCharacteristicTypeIdentifier}` | `${HKSampleTypeIdentifier}`;
 export type HealthkitWriteAuthorization = HKSampleTypeIdentifier;
 export declare enum HKCategoryValueAppleStandHour {
@@ -1014,6 +1019,13 @@ export type QueryStatisticsResponseRaw<TIdentifier extends HKQuantityTypeIdentif
     };
     readonly duration?: HKQuantity<HKQuantityTypeIdentifier, TimeUnit>;
 };
+export interface IntervalComponents {
+    readonly minute?: number;
+    readonly hour?: number;
+    readonly day?: number;
+    readonly month?: number;
+    readonly year?: number;
+}
 /**
  * @see {@link https://developer.apple.com/documentation/healthkit/hkcategoryvaluecervicalmucusquality Apple Docs }
  */
@@ -1167,7 +1179,8 @@ export declare enum HKUnits {
     DecibelSoundPressureLevel = "dBASPL",
     Percent = "%",
     Count = "count",
-    InternationalUnit = "IU"
+    InternationalUnit = "IU",
+    AppleEffortScore = "appleEffortScore"
 }
 export type MeterUnit<Prefix extends HKMetricPrefix = HKMetricPrefix.None> = `${Prefix}${HKUnitMetric.Meter}`;
 export type LiterUnit<Prefix extends HKMetricPrefix = HKMetricPrefix.None> = `${Prefix}${HKUnitMetric.Liter}`;
@@ -1380,6 +1393,9 @@ export interface HKWorkoutEvent {
     readonly startDate: string;
     readonly endDate: string;
 }
+/**
+ * @see {@link https://developer.apple.com/documentation/healthkit/hkworkouteventtype Apple Docs }
+ */
 export declare enum HKWorkoutEventType {
     pause = 1,
     resume = 2,
@@ -1521,6 +1537,9 @@ export declare enum HKWorkoutSessionLocationType {
     indoor = 2,
     outdoor = 3
 }
+/**
+ * @see {@link https://developer.apple.com/documentation/healthkit/hkworkoutsessionstate Apple Docs }
+ */
 export declare enum WorkoutSessionState {
     NotStarted = 1,
     Running = 2,
@@ -1543,6 +1562,9 @@ export type RemoteSessionSharableData = {
 };
 export type WorkoutDataReceivedEvent = {
     readonly data: readonly RemoteSessionSharableData[];
+};
+export type WorkoutEventReceivedEvent = {
+    readonly type: HKWorkoutEventType;
 };
 type ReactNativeHealthkitTypeNative = {
     /**
@@ -1602,6 +1624,7 @@ type ReactNativeHealthkitTypeNative = {
     readonly querySources: <TIdentifier extends HKCategoryTypeIdentifier | HKQuantityTypeIdentifier>(identifier: TIdentifier) => Promise<readonly HKSource[]>;
     readonly saveCategorySample: <T extends HKCategoryTypeIdentifier>(identifier: T, value: HKCategoryValueForIdentifier<T>, start: string, end: string, metadata: unknown) => Promise<boolean>;
     readonly queryStatisticsForQuantity: <TIdentifier extends HKQuantityTypeIdentifier, TUnit extends UnitForIdentifier<TIdentifier>>(identifier: HKQuantityTypeIdentifier, unit: TUnit, from: string, to: string, options: readonly HKStatisticsOptions[]) => Promise<QueryStatisticsResponseRaw<TIdentifier, TUnit>>;
+    readonly queryStatisticsCollectionForQuantity: <TIdentifier extends HKQuantityTypeIdentifier, TUnit extends UnitForIdentifier<TIdentifier>>(identifier: TIdentifier, unit: TUnit, options: readonly HKStatisticsOptions[], anchorDate: string, intervalComponents: IntervalComponents, startDate: string, endDate: string) => Promise<readonly QueryStatisticsResponseRaw<TIdentifier, TUnit>[]>;
     readonly getPreferredUnits: (identifiers: readonly HKQuantityTypeIdentifier[]) => Promise<TypeToUnitMapping>;
     readonly getWorkoutRoutes: (workoutUUID: string) => Promise<readonly WorkoutRoute[]>;
     readonly getWorkoutPlanById: (workoutUUID: string) => Promise<{
@@ -1613,9 +1636,46 @@ type ReactNativeHealthkitTypeNative = {
      */
     readonly startWatchAppWithWorkoutConfiguration: (workoutConfiguration: HKWorkoutConfiguration) => Promise<boolean>;
     /**
+     * Query state of mind samples from HealthKit
+     * @param from Start date to query from
+     * @param to End date to query to
+     * @param limit Maximum number of samples to return
+     * @param ascending Sort order of samples
+     * @returns Promise resolving to array of state of mind samples
+     * @platform ios
+     * @requires iOS 17.0+
+     */
+    readonly queryStateOfMindSamples: (from: string | null, to: string | null, limit: number, ascending: boolean) => Promise<readonly HKStateOfMindSampleRaw[]>;
+    /**
      * @see {@link https://developer.apple.com/documentation/healthkit/hkhealthstore/4172878-workoutsessionmirroringstarthand Apple Docs }
      */
     readonly workoutSessionMirroringStartHandler: () => Promise<boolean>;
+};
+export declare enum HKStateOfMindValenceClassification {
+    veryUnpleasant = 1,
+    unpleasant = 2,
+    slightlyUnpleasant = 3,
+    neutral = 4,
+    slightlyPleasant = 5,
+    pleasant = 6,
+    veryPleasant = 7
+}
+export type HKStateOfMindSampleRaw = {
+    readonly uuid: string;
+    readonly device?: HKDevice;
+    readonly startDate: string;
+    readonly endDate: string;
+    readonly metadata?: HKHeartbeatSeriesSampleMetadata;
+    readonly sourceRevision?: HKSourceRevision;
+    /**
+     * @see {@link https://developer.apple.com/documentation/healthkit/hkstateofmind/4337998-valence Apple Docs }
+     * Value between -1 and 1
+     */
+    readonly valence: number;
+    readonly kind: HKStateOfMindKind;
+    readonly valenceClassification: HKStateOfMindValenceClassification;
+    readonly associations: readonly HKStateOfMindAssociation[];
+    readonly labels: readonly HKStateOfMindLabel[];
 };
 declare const Native: ReactNativeHealthkitTypeNative;
 type OnChangeCallback = ({ typeIdentifier, }: {
@@ -1624,8 +1684,83 @@ type OnChangeCallback = ({ typeIdentifier, }: {
 type OnRemoteWorkoutStateChangeCallback = (event: WorkoutStateChangeEvent) => void;
 type OnRemoteWorkoutErrorCallback = (event: WorkoutErrorEvent) => void;
 type OnRemoteWorkoutDataCallback = (event: WorkoutDataReceivedEvent) => void;
+type OnRemoteWorkoutEventReceivedCallback = (event: WorkoutEventReceivedEvent) => void;
 interface HealthkitEventEmitter extends NativeEventEmitter {
-    readonly addListener: (eventType: 'onChange' | 'onRemoteWorkoutStateChange' | 'onRemoteWorkoutError' | 'onRemoteWorkoutDataReceived', callback: OnChangeCallback | OnRemoteWorkoutStateChangeCallback | OnRemoteWorkoutErrorCallback | OnRemoteWorkoutDataCallback) => EmitterSubscription;
+    readonly addListener: (eventType: 'onChange' | 'onRemoteWorkoutStateChange' | 'onRemoteWorkoutError' | 'onRemoteWorkoutDataReceived' | 'onRemoteWorkoutEventReceived', callback: OnChangeCallback | OnRemoteWorkoutStateChangeCallback | OnRemoteWorkoutErrorCallback | OnRemoteWorkoutDataCallback | OnRemoteWorkoutEventReceivedCallback) => EmitterSubscription;
 }
 export declare const EventEmitter: HealthkitEventEmitter;
 export default Native;
+/**
+ * @see {@link https://developer.apple.com/documentation/healthkit/hkstateofmind/label Apple Docs}
+ */
+export declare enum HKStateOfMindLabel {
+    amazed = 1,
+    amused = 2,
+    angry = 3,
+    anxious = 4,
+    ashamed = 5,
+    brave = 6,
+    calm = 7,
+    content = 8,
+    disappointed = 9,
+    discouraged = 10,
+    disgusted = 11,
+    embarrassed = 12,
+    excited = 13,
+    frustrated = 14,
+    grateful = 15,
+    guilty = 16,
+    happy = 17,
+    hopeless = 18,
+    irritated = 19,
+    jealous = 20,
+    joyful = 21,
+    lonely = 22,
+    passionate = 23,
+    peaceful = 24,
+    proud = 25,
+    relieved = 26,
+    sad = 27,
+    scared = 28,
+    stressed = 29,
+    surprised = 30,
+    worried = 31,
+    annoyed = 32,
+    confident = 33,
+    drained = 34,
+    hopeful = 35,
+    indifferent = 36,
+    overwhelmed = 37,
+    satisfied = 38
+}
+/**
+ * @see {@link https://developer.apple.com/documentation/healthkit/hkstateofmind/kind Apple Docs}
+ */
+export declare enum HKStateOfMindKind {
+    dailyMood = 2,
+    momentaryEmotion = 1
+}
+/**
+ * @see {@link https://developer.apple.com/documentation/healthkit/hkstateofmind/association Apple Docs}
+ * @since iOS 17.0+
+ */
+export declare enum HKStateOfMindAssociation {
+    community = 1,
+    currentEvents = 2,
+    dating = 3,
+    education = 4,
+    family = 5,
+    fitness = 6,
+    friends = 7,
+    health = 8,
+    hobbies = 9,
+    identity = 10,
+    money = 11,
+    partner = 12,
+    selfCare = 13,
+    spirituality = 14,
+    tasks = 15,
+    travel = 16,
+    work = 17,
+    weather = 18
+}
