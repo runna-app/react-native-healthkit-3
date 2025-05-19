@@ -2333,6 +2333,7 @@ type ReactNativeHealthkitTypeNative = {
 
   readonly pauseMirroringWorkoutSession: () => Promise<boolean>;
   readonly resumeMirroringWorkoutSession: () => Promise<boolean>;
+  readonly endMirroringWorkoutSession: () => Promise<boolean>;
 };
 
 export enum HKStateOfMindValenceClassification {
