@@ -250,6 +250,14 @@ RCT_EXTERN_METHOD(workoutSessionMirroringStartHandler:(RCTPromiseResolveBlock)re
                   reject:(RCTPromiseRejectBlock)reject
 )
 
+RCT_EXTERN_METHOD(pauseMirroringWorkoutSession:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject
+)
+
+RCT_EXTERN_METHOD(resumeMirroringWorkoutSession:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject
+)
+
 RCT_EXTERN_METHOD(queryStateOfMindSamples:(NSDate)from
                   to:(NSDate)to 
                   limit:(NSInteger)limit

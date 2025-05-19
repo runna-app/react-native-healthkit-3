@@ -41,6 +41,8 @@ import saveWorkoutSample from './utils/saveWorkoutSample'
 import startWatchApp from './utils/startWatchApp'
 import subscribeToChanges from './utils/subscribeToChanges'
 import workoutSessionMirroringStartHandler from './utils/workoutSessionMirroringStartHandler'
+import pauseMirroringWorkoutSession from './utils/pauseMirroringWorkoutSession'
+import resumeMirroringWorkoutSession from './utils/resumeMirroringWorkoutSession'
 
 const currentMajorVersionIOS = Platform.OS === 'ios' ? parseInt(Platform.Version, 10) : 0
 
@@ -194,6 +196,8 @@ export default {
 
   startWatchApp,
   workoutSessionMirroringStartHandler,
+  pauseMirroringWorkoutSession,
+  resumeMirroringWorkoutSession,
 
   /**
    * @returns the most recent sample for the given category type.
@@ -274,6 +278,8 @@ export {
   subscribeToChanges,
   startWatchApp,
   workoutSessionMirroringStartHandler,
+  pauseMirroringWorkoutSession,
+  resumeMirroringWorkoutSession,
   useMostRecentCategorySample,
   useMostRecentQuantitySample,
   useMostRecentWorkout,

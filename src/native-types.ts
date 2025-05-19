@@ -2330,6 +2330,9 @@ type ReactNativeHealthkitTypeNative = {
    * @see {@link https://developer.apple.com/documentation/healthkit/hkhealthstore/4172878-workoutsessionmirroringstarthand Apple Docs }
    */
   readonly workoutSessionMirroringStartHandler: () => Promise<boolean>;
+
+  readonly pauseMirroringWorkoutSession: () => Promise<boolean>;
+  readonly resumeMirroringWorkoutSession: () => Promise<boolean>;
 };
 
 export enum HKStateOfMindValenceClassification {
