@@ -156,6 +156,7 @@ declare const _default: {
     workoutSessionMirroringStartHandler: () => Promise<boolean>;
     pauseMirroringWorkoutSession: () => Promise<boolean>;
     resumeMirroringWorkoutSession: () => Promise<boolean>;
+    endMirroringWorkoutSession: () => Promise<boolean>;
     /**
      * @returns the most recent sample for the given category type.
      */
