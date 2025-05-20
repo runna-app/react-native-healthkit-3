@@ -11,6 +11,7 @@ import useSubscribeToChanges from './hooks/useSubscribeToChanges'
 import Native, { HKQuantityTypeIdentifier } from './native-types'
 import deleteQuantitySample from './utils/deleteQuantitySample'
 import deleteSamples from './utils/deleteSamples'
+import endMirroringWorkoutSession from './utils/endMirroringWorkoutSession'
 import getDateOfBirth from './utils/getDateOfBirth'
 import getMostRecentCategorySample from './utils/getMostRecentCategorySample'
 import getMostRecentQuantitySample from './utils/getMostRecentQuantitySample'
@@ -19,6 +20,7 @@ import getPreferredUnit from './utils/getPreferredUnit'
 import getPreferredUnits from './utils/getPreferredUnits'
 import getRequestStatusForAuthorization from './utils/getRequestStatusForAuthorization'
 import getWorkoutPlanById from './utils/getWorkoutPlanById'
+import pauseMirroringWorkoutSession from './utils/pauseMirroringWorkoutSession'
 import queryCategorySamples from './utils/queryCategorySamples'
 import queryCategorySamplesWithAnchor from './utils/queryCategorySamplesWithAnchor'
 import queryCorrelationSamples from './utils/queryCorrelationSamples'
@@ -33,6 +35,7 @@ import queryStatisticsForQuantity from './utils/queryStatisticsForQuantity'
 import queryWorkoutSamples from './utils/queryWorkouts'
 import queryWorkoutSamplesWithAnchor from './utils/queryWorkoutSamplesWithAnchor'
 import requestAuthorization from './utils/requestAuthorization'
+import resumeMirroringWorkoutSession from './utils/resumeMirroringWorkoutSession'
 import saveCategorySample from './utils/saveCategorySample'
 import saveCorrelationSample from './utils/saveCorrelationSample'
 import saveQuantitySample from './utils/saveQuantitySample'
@@ -194,6 +197,9 @@ export default {
 
   startWatchApp,
   workoutSessionMirroringStartHandler,
+  pauseMirroringWorkoutSession,
+  resumeMirroringWorkoutSession,
+  endMirroringWorkoutSession,
 
   /**
    * @returns the most recent sample for the given category type.
@@ -274,6 +280,8 @@ export {
   subscribeToChanges,
   startWatchApp,
   workoutSessionMirroringStartHandler,
+  pauseMirroringWorkoutSession,
+  resumeMirroringWorkoutSession,
   useMostRecentCategorySample,
   useMostRecentQuantitySample,
   useMostRecentWorkout,

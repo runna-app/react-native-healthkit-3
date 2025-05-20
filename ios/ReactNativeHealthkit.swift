@@ -2289,6 +2289,74 @@ class ReactNativeHealthkit: RCTEventEmitter {
     resolve(true)
   }
 
+  @available(iOS 17.0.0, *)
+  @objc(pauseMirroringWorkoutSession:reject:)
+  func pauseMirroringWorkoutSession(
+    resolve: @escaping RCTPromiseResolveBlock,
+    reject: @escaping RCTPromiseRejectBlock
+  ) {
+    guard let store = _store else {
+      return reject(INIT_ERROR, INIT_ERROR_MESSAGE, nil)
+    }
+
+    guard let workoutSession = _workoutSession else {
+      return reject(
+        REMOTE_WORKOUT_SESSION_NOT_FOUND_ERROR,
+        REMOTE_WORKOUT_SESSION_NOT_FOUND_ERROR_MESSAGE,
+        nil
+      )
+    }
+
+    workoutSession.pause()
+
+    resolve(true)
+  }
+
+  @available(iOS 17.0.0, *)
+  @objc(resumeMirroringWorkoutSession:reject:)
+  func resumeMirroringWorkoutSession(
+    resolve: @escaping RCTPromiseResolveBlock,
+    reject: @escaping RCTPromiseRejectBlock
+  ) {
+    guard let store = _store else {
+      return reject(INIT_ERROR, INIT_ERROR_MESSAGE, nil)
+    }
+
+    guard let workoutSession = _workoutSession else {
+      return reject(
+        REMOTE_WORKOUT_SESSION_NOT_FOUND_ERROR,
+        REMOTE_WORKOUT_SESSION_NOT_FOUND_ERROR_MESSAGE,
+        nil
+      )
+    }
+
+    workoutSession.resume()
+
+    resolve(true)
+  }
+
+  @available(iOS 17.0.0, *)
+  @objc(endMirroringWorkoutSession:reject:)
+  func endMirroringWorkoutSession(
+    resolve: @escaping RCTPromiseResolveBlock,
+    reject: @escaping RCTPromiseRejectBlock
+  ) {
+    guard let store = _store else {
+      return reject(INIT_ERROR, INIT_ERROR_MESSAGE, nil)
+    }
+
+    guard let workoutSession = _workoutSession else {
+      return reject(
+        REMOTE_WORKOUT_SESSION_NOT_FOUND_ERROR,
+        REMOTE_WORKOUT_SESSION_NOT_FOUND_ERROR_MESSAGE,
+        nil
+      )
+    }
+
+    workoutSession.end()
+
+    resolve(true)
+  }
 }
 
 // MARK: - HKWorkoutSessionDelegate

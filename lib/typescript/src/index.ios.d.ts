@@ -17,6 +17,7 @@ import getPreferredUnit from './utils/getPreferredUnit';
 import getPreferredUnits from './utils/getPreferredUnits';
 import getRequestStatusForAuthorization from './utils/getRequestStatusForAuthorization';
 import getWorkoutPlanById from './utils/getWorkoutPlanById';
+import pauseMirroringWorkoutSession from './utils/pauseMirroringWorkoutSession';
 import queryCategorySamples from './utils/queryCategorySamples';
 import queryCategorySamplesWithAnchor from './utils/queryCategorySamplesWithAnchor';
 import queryCorrelationSamples from './utils/queryCorrelationSamples';
@@ -31,6 +32,7 @@ import queryStatisticsForQuantity from './utils/queryStatisticsForQuantity';
 import queryWorkoutSamples from './utils/queryWorkouts';
 import queryWorkoutSamplesWithAnchor from './utils/queryWorkoutSamplesWithAnchor';
 import requestAuthorization from './utils/requestAuthorization';
+import resumeMirroringWorkoutSession from './utils/resumeMirroringWorkoutSession';
 import saveCategorySample from './utils/saveCategorySample';
 import saveCorrelationSample from './utils/saveCorrelationSample';
 import saveQuantitySample from './utils/saveQuantitySample';
@@ -152,6 +154,9 @@ declare const _default: {
     subscribeToChanges: (identifier: import("./native-types").HKSampleTypeIdentifier, callback: () => void) => Promise<() => Promise<boolean>>;
     startWatchApp: (configuration: import("./native-types").HKWorkoutConfiguration) => () => Promise<boolean>;
     workoutSessionMirroringStartHandler: () => Promise<boolean>;
+    pauseMirroringWorkoutSession: () => Promise<boolean>;
+    resumeMirroringWorkoutSession: () => Promise<boolean>;
+    endMirroringWorkoutSession: () => Promise<boolean>;
     /**
      * @returns the most recent sample for the given category type.
      */
@@ -192,5 +197,5 @@ export { authorizationStatusFor, availableQuantityTypes, disableAllBackgroundDel
 /**
 * @deprecated Use queryWorkoutSamples instead
 */
-queryWorkouts, queryWorkoutSamples, queryWorkoutSamplesWithAnchor, querySources, requestAuthorization, deleteQuantitySample, deleteSamples, getWorkoutPlanById, saveCategorySample, saveCorrelationSample, saveQuantitySample, saveWorkoutSample, saveWorkoutRoute, subscribeToChanges, startWatchApp, workoutSessionMirroringStartHandler, useMostRecentCategorySample, useMostRecentQuantitySample, useMostRecentWorkout, useSubscribeToChanges, useHealthkitAuthorization, useIsHealthDataAvailable, useSources, useStatisticsForQuantity, isProtectedDataAvailable, queryStateOfMindSamples, };
+queryWorkouts, queryWorkoutSamples, queryWorkoutSamplesWithAnchor, querySources, requestAuthorization, deleteQuantitySample, deleteSamples, getWorkoutPlanById, saveCategorySample, saveCorrelationSample, saveQuantitySample, saveWorkoutSample, saveWorkoutRoute, subscribeToChanges, startWatchApp, workoutSessionMirroringStartHandler, pauseMirroringWorkoutSession, resumeMirroringWorkoutSession, useMostRecentCategorySample, useMostRecentQuantitySample, useMostRecentWorkout, useSubscribeToChanges, useHealthkitAuthorization, useIsHealthDataAvailable, useSources, useStatisticsForQuantity, isProtectedDataAvailable, queryStateOfMindSamples, };
 export * from './types';
